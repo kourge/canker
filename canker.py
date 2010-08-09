@@ -53,8 +53,7 @@ class Key(object):
         building = self.BUILDINGS.index(self.building) << 12
         room = int(self.room, 16)
         location = building + room
-        ops = ((0xFF0000, 16), (0xFF00, 8), (0xFF, 0))
-        location = [(location & mask) >> shift for mask, shift in ops]
+        location = [(location & mask) >> shift for mask, shift in ops[1:]]
 
         run = id + created + location
         checksum = reduce(lambda x, y: x ^ y, run)
@@ -65,6 +64,12 @@ class Key(object):
 
     def dump_stream(self):
         return ''.join([chr(n) for n in self.dump()])
+
+    def dump_file(self, file):
+        data = self.dump_stream()
+        file.write(data)
+        file.close()
+        return data
 
     def __repr__(self):
         info = {
