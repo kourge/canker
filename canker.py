@@ -10,8 +10,8 @@ class Key(object):
         pass
 
     BUILDINGS = [
-        None, 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'K', 'L', 'M', 'N',
-        'P', 'R', 'S'
+        None, 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'K', None, None, None,
+        None, None, None, 'L', 'M', 'N', 'P', 'R', 'S'
     ]
 
     def __init__(self, created, building, room, id=0x54071030, key=None):
@@ -98,9 +98,7 @@ class Key(object):
         n = (timestamp & 0b000000000001111110000000) >> 7
         s = (timestamp & 0b000000000000000001111110) >> 1
         p = timestamp & 1
-        if p:
-            h += 12
-        created = datetime(year, month, d, h, n, s)
+        created = datetime(year, month, d, h + (12 * p), n, s)
 
         location = sum([byte << n for byte, n in zip(key[8:11], (16, 8, 0))])
         building = cls.BUILDINGS[location >> 12]
@@ -119,7 +117,7 @@ class Key(object):
     @classmethod
     def parse_stream(cls, stream):
         if not isinstance(stream, str):
-            raise ValueError("'readable' should be a string")
+            raise ValueError("'stream' should be a string")
 
         return cls.parse([ord(c) for c in stream])
 
