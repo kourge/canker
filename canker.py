@@ -18,7 +18,7 @@ class Key(object):
         if not isinstance(created, datetime):
             raise ValueError("'created' should be a datetime")
 
-        if not building in self.BUILDINGS:
+        if building not in self.BUILDINGS:
             raise IndexError("'building' is invalid")
 
         if int(room, 16) > 0xFFF:
